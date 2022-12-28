@@ -1,0 +1,18 @@
+﻿project progress
+-Create Project class /
+-Create Bug class /
+-Create Comment class /
+
+-Configure database for Project, Bug and Comment /
+
+-Add scaffolding for Project class
+-Test that projects can be added
+-Add scaffolding for Bug class
+-Test that bugs can be added to projects
+-Add scaffolding for Comment class
+-Test that Comments can be added to bugs
+-Add automatic comments for creating, opening and closing a bug
+
+-Add search and filter functions for projects, bugs and comments
+
+bugs
