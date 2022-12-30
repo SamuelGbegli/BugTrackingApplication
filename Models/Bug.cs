@@ -21,7 +21,6 @@ namespace BugTrackingApplication.Models
         public int ProjectID { get; set; }
         public Project Project { get; set; }
 
-        public Guid UserID { get; set; }
         public IdentityUser User { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
