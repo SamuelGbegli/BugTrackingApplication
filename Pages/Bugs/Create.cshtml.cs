@@ -49,6 +49,7 @@ namespace BugTrackingApplication.Pages.Bugs
 
             Bug.Created = DateTime.Now;
             Bug.Updated = DateTime.Now;
+            Bug.IsOpen = true;
 
             _context.Bugs.Add(Bug);
             await _context.SaveChangesAsync();

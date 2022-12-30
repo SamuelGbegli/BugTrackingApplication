@@ -26,23 +26,23 @@ namespace BugTrackingApplication.Pages.Bugs
         {
             if (_context.Bugs != null)
             {
+                var bugsIQ = from b in _context.Bugs
+                             select b;
+
                 if (id is not null)
                 {
-                    if (_context.Projects.Find(id) == null)
+                    if (_context.Projects.Find(id) != null)
                     {
-                        return NotFound();
+                        bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
+
+                        Project = _context.Projects.Find(id);
+                        Bugs = await bugsIQ.ToListAsync();
+                        return Page();
                     }
-
-                    var bugsIQ = from b in _context.Bugs
-                                 select b;
-                    bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
-
-                    Project = _context.Projects.Find(id);
-                    Bugs = await bugsIQ.ToListAsync();
-                    return Page();
+                    else return NotFound();
                 }
                     
-                Bugs = await _context.Bugs
+                Bugs = await bugsIQ
                 .Include(b => b.Project).ToListAsync();
                 return Page();
             }

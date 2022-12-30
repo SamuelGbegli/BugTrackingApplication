@@ -39,5 +39,29 @@ namespace BugTrackingApplication.Pages.Bugs
             }
             return Page();
         }
+
+        public async Task OnPostAsync(int? id)
+        {
+            var bug = await _context.Bugs.FirstOrDefaultAsync(m => m.ID == id);
+            if (bug != null)
+            {
+                bug.IsOpen = !bug.IsOpen;
+                string status = bug.IsOpen ? "Opened" : "Closed";
+
+                _context.Comments.Add(new Comment
+                {
+                    Text = "${status} on " + DateTime.Now.ToString(),
+                    BugID = bug.ID,
+                    Bug = bug,
+                    CanEdit = false,
+                    Created = DateTime.Now,
+                    Updated = DateTime.Now
+
+                });
+                await _context.SaveChangesAsync();
+            }
+
+            await OnGetAsync(id);
+        }
     }
 }

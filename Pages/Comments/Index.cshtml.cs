@@ -21,13 +21,22 @@ namespace BugTrackingApplication.Pages.Comments
 
         public IList<Comment> Comment { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (_context.Comments != null)
             {
-                Comment = await _context.Comments
+                var commentIQ = from c in _context.Comments
+                                select c;
+                
+                if(id is not null)
+                    commentIQ = commentIQ.Where(c => c.BugID == id);
+
+                Comment = await commentIQ
                 .Include(c => c.Bug).ToListAsync();
+
+                return Page();
             }
+            return NotFound();
         }
     }
 }

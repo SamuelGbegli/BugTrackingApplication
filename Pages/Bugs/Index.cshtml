@@ -36,7 +36,7 @@
                 @Html.DisplayNameFor(model => model.Bugs[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bugs[0].IsOpen)
+                Status
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Bugs[0].Created)
@@ -63,8 +63,15 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsOpen)
-            </td>
+                    @if (item.IsOpen)
+                    {
+                        <span>Open</span>
+                    }
+                    else
+                    {
+                        <span>Closed</span>
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created)
             </td>
@@ -72,11 +79,12 @@
                 @Html.DisplayFor(modelItem => item.Updated)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Project.Name)
+                <a asp-page="../Projects/Details" asp-route-id="@item.ProjectID">@item.Project.Name</a>
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="../Comments/Index" asp-route-id="@item.ID">View comments</a> |
+                        <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
