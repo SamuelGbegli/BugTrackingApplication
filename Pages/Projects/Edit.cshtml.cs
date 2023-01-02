@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackingApplication.Pages.Projects
 {
     public class EditModel : PageModel
     {
         private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(BugTrackingApplication.Data.ApplicationDbContext context)
+        public EditModel(BugTrackingApplication.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -35,6 +38,11 @@ namespace BugTrackingApplication.Pages.Projects
             {
                 return NotFound();
             }
+            if(project.User != _userManager.GetUserId(HttpContext.User))
+            {
+                return Forbid();
+            }
+
             Project = project;
             return Page();
         }
@@ -52,6 +60,8 @@ namespace BugTrackingApplication.Pages.Projects
 
             try
             {
+                Project.Updated = DateTime.Now;
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

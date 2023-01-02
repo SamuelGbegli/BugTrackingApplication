@@ -53,6 +53,10 @@ namespace BugTrackingApplication.Pages.Comments
 
             try
             {
+                Comment.Updated = DateTime.Now;
+                Comment.Bug.Updated = DateTime.Now;
+                Comment.Bug.Project.Updated = DateTime.Now;
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

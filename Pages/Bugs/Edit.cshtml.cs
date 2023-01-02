@@ -8,16 +8,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackingApplication.Pages.Bugs
 {
     public class EditModel : PageModel
     {
         private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(BugTrackingApplication.Data.ApplicationDbContext context)
+        public EditModel(BugTrackingApplication.Data.ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -35,6 +39,8 @@ namespace BugTrackingApplication.Pages.Bugs
             {
                 return NotFound();
             }
+            if (bug.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
+
             Bug = bug;
            ViewData["ProjectID"] = new SelectList(_context.Projects, "ID", "Name");
             return Page();
@@ -44,6 +50,8 @@ namespace BugTrackingApplication.Pages.Bugs
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -53,6 +61,10 @@ namespace BugTrackingApplication.Pages.Bugs
 
             try
             {
+
+                _context.Projects.First(p => p.ID == Bug.ProjectID).Updated = DateTime.Now;
+                Bug.Updated = DateTime.Now;
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

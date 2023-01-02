@@ -18,8 +18,6 @@ namespace BugTrackingApplication.Models
         public int BugID { get; set; }
         public Bug Bug { get; set; }
 
-
-
-        public IdentityUser User { get; set; }
+        public string User { get; set; }
     }
 }

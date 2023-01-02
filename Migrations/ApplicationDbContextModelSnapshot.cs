@@ -52,14 +52,12 @@ namespace BugTrackingApplication.Migrations
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
                     b.HasIndex("ProjectID");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Bug", (string)null);
                 });
@@ -88,14 +86,12 @@ namespace BugTrackingApplication.Migrations
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
                     b.HasIndex("BugID");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Comment", (string)null);
                 });
@@ -124,12 +120,10 @@ namespace BugTrackingApplication.Migrations
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Project", (string)null);
                 });
@@ -344,13 +338,7 @@ namespace BugTrackingApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Project");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BugTrackingApplication.Models.Comment", b =>
@@ -361,22 +349,7 @@ namespace BugTrackingApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Bug");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BugTrackingApplication.Models.Project", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -21,6 +21,7 @@ namespace BugTrackingApplication.Pages.Bugs
 
         [BindProperty]
       public Bug Bug { get; set; }
+        public int ProjectID { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -53,11 +54,13 @@ namespace BugTrackingApplication.Pages.Bugs
             if (bug != null)
             {
                 Bug = bug;
+                ProjectID = bug.ProjectID;
+                //Bug.Project.Updated = DateTime.Now;
                 _context.Bugs.Remove(Bug);
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index", new { id = ProjectID});
         }
     }
 }

@@ -15,7 +15,7 @@ namespace BugTrackingApplication.Models
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
 
-        public IdentityUser User { get; set; }
+        public string User { get; set; }
 
         public ICollection<Bug> Bugs { get; set; }
     }

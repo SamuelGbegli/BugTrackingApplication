@@ -8,28 +8,28 @@
 <h1>Comments</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create" asp-route-id="@Model.Bug.ID">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Comment[0].Text)
+                @Html.DisplayNameFor(model => model.Comments[0].Text)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Comment[0].Created)
+                @Html.DisplayNameFor(model => model.Comments[0].Created)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Comment[0].Updated)
+                @Html.DisplayNameFor(model => model.Comments[0].Updated)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Comment[0].Bug)
+                @Html.DisplayNameFor(model => model.Comments[0].Bug)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Comment) {
+@foreach (var item in Model.Comments) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Text)

@@ -28,6 +28,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Project[0].Updated)
             </th>
+            <th>
+                Open bugs
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -45,10 +48,13 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated)
-            </td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Updated)
+                </td>
+                <td>
+                    @*@item.Bugs.Where(b => b.IsOpen).Count()*@
+                </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |

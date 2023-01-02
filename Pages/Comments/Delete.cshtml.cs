@@ -53,6 +53,10 @@ namespace BugTrackingApplication.Pages.Comments
             if (comment != null)
             {
                 Comment = comment;
+
+                //Comment.Bug.Updated = DateTime.Now;
+                //Comment.Bug.Project.Updated = DateTime.Now;
+
                 _context.Comments.Remove(Comment);
                 await _context.SaveChangesAsync();
             }

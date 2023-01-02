@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackingApplication.Pages.Projects
 {
     public class DetailsModel : PageModel
     {
         private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public DetailsModel(BugTrackingApplication.Data.ApplicationDbContext context)
+        public DetailsModel(BugTrackingApplication.Data.ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
       public Project Project { get; set; }
@@ -33,10 +37,10 @@ namespace BugTrackingApplication.Pages.Projects
             {
                 return NotFound();
             }
-            else 
-            {
-                Project = project;
-            }
+            if (project.User != _userManager.GetUserId(HttpContext.User))
+                return Forbid();
+
+            Project = project;
             return Page();
         }
     }
