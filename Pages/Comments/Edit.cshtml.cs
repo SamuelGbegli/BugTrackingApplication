@@ -8,16 +8,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackingApplication.Pages.Comments
 {
     public class EditModel : PageModel
     {
         private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(BugTrackingApplication.Data.ApplicationDbContext context)
+        public EditModel(BugTrackingApplication.Data.ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -54,8 +58,12 @@ namespace BugTrackingApplication.Pages.Comments
             try
             {
                 Comment.Updated = DateTime.Now;
-                Comment.Bug.Updated = DateTime.Now;
-                Comment.Bug.Project.Updated = DateTime.Now;
+
+                var bug = _context.Bugs.First(b => b.ID == Comment.BugID);
+                var project = _context.Projects.First(p => p.ID == bug.ProjectID);
+
+                bug.Updated = DateTime.Now;
+                project.Updated = DateTime.Now;
 
                 await _context.SaveChangesAsync();
             }

@@ -8,8 +8,25 @@
 <h1>Comments</h1>
 
 <p>
-    <a asp-page="Create" asp-route-id="@Model.Bug.ID">Create New</a>
+    <a asp-page="../Bugs/Index" asp-route-id="@Model.Bug.ProjectID">Go back to project overview</a>
 </p>
+
+<div class="row">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label"></label>
+            <input asp-for="Comment.Text" class="form-control" />
+            <span asp-validation-for="Comment.Text" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Comment.BugID"/>
+        <br/>
+        <div class="form-group">
+            <input type="submit" value="Add" class="btn btn-primary"/>
+        </div>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -21,9 +38,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Comments[0].Updated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comments[0].Bug)
             </th>
             <th></th>
         </tr>
@@ -39,9 +53,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Updated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bug.Title)
             </td>
             <td>
                     @if (item.CanEdit) {

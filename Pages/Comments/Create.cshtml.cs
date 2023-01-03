@@ -47,7 +47,8 @@ namespace BugTrackingApplication.Pages.Comments
 
                 return Page();
             }
-    
+
+            Comment.Bug = _context.Bugs.First(b => b.ID == Comment.BugID);
 
             Comment.Created = DateTime.Now;
             Comment.Updated = DateTime.Now;

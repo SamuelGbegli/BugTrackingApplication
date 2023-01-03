@@ -19,7 +19,7 @@ namespace BugTrackingApplication.Pages.Projects
         public IndexModel(BugTrackingApplication.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
-            _userManager = userManager;
+            _userManager = userManager;            
         }
 
         public IList<Project> Project { get;set; } = default!;
@@ -32,6 +32,8 @@ namespace BugTrackingApplication.Pages.Projects
             var projectsIQ = from p in _context.Projects
                              select p;
             projectsIQ = projectsIQ.Where(p => p.User == user);
+
+            projectsIQ = projectsIQ.OrderByDescending(p => p.Updated);
 
             if (_context.Projects != null)
             {

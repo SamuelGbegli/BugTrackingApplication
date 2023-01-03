@@ -34,17 +34,18 @@ namespace BugTrackingApplication.Pages.Bugs
                 var bugsIQ = from b in _context.Bugs
                              select b;
 
-                    
-                    if (project != null)
-                    {
+                bugsIQ = bugsIQ.OrderByDescending(b => b.Updated);
+
+                if (project != null)
+                {
 
                     if (project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
-                        bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
+                    bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
 
-                        Project = _context.Projects.Find(id);
-                        Bugs = await bugsIQ.ToListAsync();
-                        return Page();
-                    }
+                    Project = _context.Projects.Find(id);
+                    Bugs = await bugsIQ.ToListAsync();
+                    return Page();
+                }
             }
             return NotFound();
         }

@@ -25,18 +25,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Project.Link" class="control-label"></label>
-                <input asp-for="Project.Link" class="form-control" />
+                <input type="url" asp-for="Project.Link" class="form-control" />
                 <span asp-validation-for="Project.Link" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project.Created" class="control-label"></label>
-                <input asp-for="Project.Created" class="form-control" />
-                <span asp-validation-for="Project.Created" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project.Updated" class="control-label"></label>
-                <input asp-for="Project.Updated" class="form-control" />
-                <span asp-validation-for="Project.Updated" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

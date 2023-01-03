@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackingApplication.Pages.Projects
 {
     public class DeleteModel : PageModel
     {
         private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public DeleteModel(BugTrackingApplication.Data.ApplicationDbContext context)
+        public DeleteModel(BugTrackingApplication.Data.ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -24,21 +28,15 @@ namespace BugTrackingApplication.Pages.Projects
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Projects == null)
-            {
-                return NotFound();
-            }
+            if (id == null || _context.Projects == null) return NotFound();
 
             var project = await _context.Projects.FirstOrDefaultAsync(m => m.ID == id);
 
-            if (project == null)
-            {
-                return NotFound();
-            }
-            else 
-            {
-                Project = project;
-            }
+            if (project == null) return NotFound();
+            if (project.User != _userManager.GetUserId(User)) return Forbid();
+
+            Project = project;
+            
             return Page();
         }
 

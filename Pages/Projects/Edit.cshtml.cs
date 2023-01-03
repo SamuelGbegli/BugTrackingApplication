@@ -28,20 +28,11 @@ namespace BugTrackingApplication.Pages.Projects
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Projects == null)
-            {
-                return NotFound();
-            }
+            if (id == null || _context.Projects == null) return NotFound();
 
             var project =  await _context.Projects.FirstOrDefaultAsync(m => m.ID == id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-            if(project.User != _userManager.GetUserId(HttpContext.User))
-            {
-                return Forbid();
-            }
+            if (project == null) return NotFound();
+            if(project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
 
             Project = project;
             return Page();

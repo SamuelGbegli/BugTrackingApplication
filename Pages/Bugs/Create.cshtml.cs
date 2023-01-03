@@ -32,20 +32,21 @@ namespace BugTrackingApplication.Pages.Bugs
 
             if (project is null) return NotFound();
             if (project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
+            
             Bug.ProjectID = (int)id;
+            Bug.User = _userManager.GetUserId(HttpContext.User);
+
             return Page();
         }
 
         [BindProperty]
         public Bug Bug { get; set; } = new Bug();
 
-        public int ProjectID { get; set; }
-
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
@@ -64,10 +65,7 @@ namespace BugTrackingApplication.Pages.Bugs
             Bug.Updated = DateTime.Now;
             Bug.IsOpen = true;
 
-            Bug.User = _userManager.GetUserId(HttpContext.User); 
-
-            Bug.Project =  _context.Projects.First(p => p.ID == Bug.ProjectID);
-            Bug.Project.Updated = DateTime.Now;
+            _context.Projects.First(p => p.ID == Bug.ProjectID).Updated = DateTime.Now;
 
             _context.Bugs.Add(Bug);
             await _context.SaveChangesAsync();

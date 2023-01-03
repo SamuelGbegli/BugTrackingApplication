@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackingApplication.Pages.Comments
 {
     public class DeleteModel : PageModel
     {
         private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public DeleteModel(BugTrackingApplication.Data.ApplicationDbContext context)
+        public DeleteModel(BugTrackingApplication.Data.ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -50,18 +54,22 @@ namespace BugTrackingApplication.Pages.Comments
             }
             var comment = await _context.Comments.FindAsync(id);
 
+            var bug = _context.Bugs.First(b => b.ID == comment.BugID);
+            var project = _context.Projects.First(p => p.ID == bug.ProjectID);
+
             if (comment != null)
             {
                 Comment = comment;
 
-                //Comment.Bug.Updated = DateTime.Now;
-                //Comment.Bug.Project.Updated = DateTime.Now;
+
+                bug.Updated = DateTime.Now;
+                project.Updated = DateTime.Now;
 
                 _context.Comments.Remove(Comment);
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index", new { id =  bug.ID});
         }
     }
 }

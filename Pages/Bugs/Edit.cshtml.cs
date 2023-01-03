@@ -79,7 +79,7 @@ namespace BugTrackingApplication.Pages.Bugs
                 }
             }
 
-            return RedirectToPage("./Index", new { id = Bug.ID });
+            return RedirectToPage("./Index", new { id = Bug.ProjectID });
         }
 
         private bool BugExists(int id)
