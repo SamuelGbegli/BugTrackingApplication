@@ -8,37 +8,81 @@ using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.AspNetCore.Identity;
+using BugTrackingApplication.Models.ViewModels;
+using BugTrackingApplication.Models.SearchFilterModels;
 
 namespace BugTrackingApplication.Pages.Projects
 {
     public class IndexModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public IndexModel(BugTrackingApplication.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        [BindProperty(SupportsGet = true)]
+        public string Sort { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string Order { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public bool OpenBugsOnly { get; set; }
+
+        public IndexModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
-            _userManager = userManager;            
+            _userManager = userManager;
         }
 
-        public IList<Project> Project { get;set; } = default!;
+        public List<ProjectViewModel> Projects { get; set; } = new List<ProjectViewModel>();
 
-
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string sort, string order, bool openbugsonly)
         {
-            var user = _userManager.GetUserId(HttpContext.User);
-
-            var projectsIQ = from p in _context.Projects
-                             select p;
-            projectsIQ = projectsIQ.Where(p => p.User == user);
-
-            projectsIQ = projectsIQ.OrderByDescending(p => p.Updated);
+            Sort= sort;
+            Order = order;
+            OpenBugsOnly = openbugsonly;
 
             if (_context.Projects != null)
             {
-                Project = await projectsIQ.ToListAsync();
-                
+                var user = _userManager.GetUserId(HttpContext.User);
+
+                var projectsIQ = from p in _context.Projects
+                                 select p;
+
+                projectsIQ = projectsIQ.Where(p => p.User == user);
+
+                foreach (var project in projectsIQ)
+                {
+                    if (OpenBugsOnly)
+                    {
+                        if (_context.Bugs.Where(b => b.ProjectID == project.ID && b.IsOpen).Count() == 0) continue;
+                    }
+                    Projects.Add(new ProjectViewModel
+                    {
+                        Project = project,
+                        BugCount = _context.Bugs.Where(b => b.ProjectID == project.ID && b.IsOpen).Count()
+                    });
+                }
+
+                switch (sort)
+                {
+                    case "Date created":
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Project.Created).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.Project.Created).ToList();
+                        break;
+                    case "Last updated":
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Project.Updated).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.Project.Updated).ToList();
+                        break;
+                    case "Open bugs":
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.BugCount).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.BugCount).ToList();
+                        break;
+                    default:
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Project.Name).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.Project.Name).ToList();
+                        break;
+                }
+
             }
         }
     }

@@ -1,15 +1,13 @@
 ﻿Additional features
 
 Implement external login systems
-Have project view show a list of bugs
-Have bug view show a list of comments and also toggle whether a bug is open or not
 
-sort projects by name, date created and modified in ascending and desecending order
+sort projects by name, date created and modified and number of bugs in ascending and desecending order
 sort bugs by title, severity, date created and modified and status
 filter bugs based on severity and status
 allow users to highlight bugs
 
-search for bugs and
+search for projects and bugs
+cooments for whenever a bug's severity is
 
 New features:
-prevent users from viewing a resource if their id does not match the user id

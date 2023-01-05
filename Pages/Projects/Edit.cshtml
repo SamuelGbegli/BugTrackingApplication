@@ -29,6 +29,8 @@
                 <input asp-for="Project.Link" class="form-control" />
                 <span asp-validation-for="Project.Link" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="Project.Created"/>
+            <input type="hidden" asp-for="Project.User" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

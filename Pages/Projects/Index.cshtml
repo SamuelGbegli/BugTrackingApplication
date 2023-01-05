@@ -10,23 +10,44 @@
 <p>
     <a asp-page="Create">Add new project</a>
 </p>
+
+<form method="get">
+    <label>Sort by:</label>
+    <select name="Sort" asp-for="Sort">
+        <option>Date created</option>
+        <option>Last updated</option>
+        <option>Name</option>
+        <option>Open bugs</option>
+    </select>
+    <label>Order:</label>
+    <select name="Order" asp-for="Order">
+        <option>Ascending</option>
+        <option>Descending</option>
+    </select>
+    <br />
+    <label>Only show projects with open bugs</label>
+    <input type="checkbox" name="OpenBugsOnly" asp-for="OpenBugsOnly"/>
+    <br/>
+    <input type="submit" class="btn btn-primary" value="Sort"/>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].Name)
+                @Html.DisplayNameFor(model => model.Projects[0].Project.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].Description)
+                @Html.DisplayNameFor(model => model.Projects[0].Project.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].Link)
+                @Html.DisplayNameFor(model => model.Projects[0].Project.Link)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].Created)
+                @Html.DisplayNameFor(model => model.Projects[0].Project.Created)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].Updated)
+                @Html.DisplayNameFor(model => model.Projects[0].Project.Updated)
             </th>
             <th>
                 Open bugs
@@ -35,33 +56,41 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Project) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                    <a href="@item.Link">@item.Link</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
+        @foreach (var item in Model.Projects)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Updated)
+                    @Html.DisplayFor(modelItem => item.Project.Description)
                 </td>
                 <td>
-                    @*@item.Bugs.Where(b => b.IsOpen).Count()*@
+                    @if(item.Project.Link is not null)
+                    {
+                        <a href="@item.Project.Link">@item.Project.Link</a>
+                    }
+                    else
+                    {
+                        <span>n/a</span>
+                    }
                 </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-page="../Bugs/Index" asp-route-id="@item.ID">View bugs</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.Updated)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BugCount)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Project.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Project.ID">Details</a> |
+                    <a asp-page="../Bugs/Index" asp-route-id="@item.Project.ID">View bugs</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Project.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

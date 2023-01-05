@@ -51,6 +51,8 @@ namespace BugTrackingApplication.Pages.Bugs
                 return Page();
             }
 
+            var user = _userManager.GetUserId(HttpContext.User);
+
             _context.Comments.Add(new Comment
             {
                 Text = "Created bug " + Bug.Title + " on " + DateTime.Now.ToString(),
@@ -58,12 +60,15 @@ namespace BugTrackingApplication.Pages.Bugs
                 Bug = Bug,
                 CanEdit = false,
                 Created = DateTime.Now,
-                Updated = DateTime.Now
+                Updated = DateTime.Now,
+                User = user
             });
 
             Bug.Created = DateTime.Now;
             Bug.Updated = DateTime.Now;
             Bug.IsOpen = true;
+
+            Bug.User = user;
 
             _context.Projects.First(p => p.ID == Bug.ProjectID).Updated = DateTime.Now;
 

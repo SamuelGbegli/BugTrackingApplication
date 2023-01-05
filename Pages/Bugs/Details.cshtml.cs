@@ -54,13 +54,14 @@ namespace BugTrackingApplication.Pages.Bugs
 
                 _context.Comments.Add(new Comment
                 {
-                    Text = "${status} on " + DateTime.Now.ToString(),
+                    Text = status + " on " + DateTime.Now.ToString(),
                     BugID = bug.ID,
                     Bug = bug,
                     CanEdit = false,
                     Created = DateTime.Now,
-                    Updated = DateTime.Now
-
+                    Updated = DateTime.Now,
+                    User = _userManager.GetUserId(HttpContext.User)
+                    
                 });
                 await _context.SaveChangesAsync();
             }

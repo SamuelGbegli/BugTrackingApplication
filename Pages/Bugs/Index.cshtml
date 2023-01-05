@@ -23,6 +23,26 @@
 <p>
     <a asp-page="Create" asp-route-id="@Model.Project.ID">Add new bug</a>
 </p>
+
+<form method="get">
+    <input type="hidden" name="id" asp-for="@Model.Project.ID" />
+    <label>Sort by:</label>
+    <select name="Sort" asp-for="@Model.Sort">
+        <option>Date created</option>
+        <option>Last updated</option>
+        <option>Severity</option>
+        <option>Title</option>
+    </select>
+    <label>Order:</label>
+    <select name="Order" asp-for="@Model.Order">
+        <option>Ascending</option>
+        <option>Descending</option>
+    </select>
+    <br/>
+    <
+    <input type="submit" class="btn btn-primary" value="Sort" asp-route-id="@Model.Project.ID"/>
+</form>
+
 <table class="table">
     <thead>
         <tr>
