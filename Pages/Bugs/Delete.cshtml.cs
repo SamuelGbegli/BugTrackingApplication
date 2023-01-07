@@ -55,8 +55,8 @@ namespace BugTrackingApplication.Pages.Bugs
             {
                 Bug = bug;
                 ProjectID = bug.ProjectID;
-                //Bug.Project.Updated = DateTime.Now;
                 _context.Bugs.Remove(Bug);
+                _context.Projects.Find(ProjectID).Updated = DateTime.Now;
                 await _context.SaveChangesAsync();
             }
 

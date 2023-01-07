@@ -17,8 +17,8 @@ namespace BugTrackingApplication.Pages.Bugs
         private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public string Sort { get; set; }
-        public string Order { get; set; }
+        public string Sort { get; set; } = "Last updated";
+        public string Order { get; set; } = "Descending";
 
         public bool LowSeverity { get; set; }
         public bool MidSeverity { get; set; }
@@ -86,23 +86,22 @@ namespace BugTrackingApplication.Pages.Bugs
                             if (Order == "Ascending") bugsIQ = bugsIQ.OrderBy(b => b.Created);
                             else bugsIQ = bugsIQ.OrderByDescending(b => b.Created);
                             break;
-                        case "Last updated":
-                            if (Order == "Ascending") bugsIQ = bugsIQ.OrderBy(b => b.Updated);
-                            else bugsIQ = bugsIQ.OrderByDescending(b => b.Updated);
+                        case "Title":
+                            if (Order == "Ascending") bugsIQ = bugsIQ.OrderBy(b => b.Title);
+                            else bugsIQ = bugsIQ.OrderByDescending(b => b.Title);
                             break;
                         case "Severity":
                             if (Order == "Ascending") bugsIQ = bugsIQ.OrderBy(b => b.Severity);
                             else bugsIQ = bugsIQ.OrderByDescending(b => b.Severity);
                             break;
                         default:
-                            if (Order == "Ascending") bugsIQ = bugsIQ.OrderBy(b => b.Title);
-                            else bugsIQ = bugsIQ.OrderByDescending(b => b.Title);
+                            if (Order == "Ascending") bugsIQ = bugsIQ.OrderBy(b => b.Updated);
+                            else bugsIQ = bugsIQ.OrderByDescending(b => b.Updated);
                             break;
                     }
 
                     Project = _context.Projects.Find(id);
                     Bugs = await bugsIQ.ToListAsync();
-
                     return Page();
                 }
             }

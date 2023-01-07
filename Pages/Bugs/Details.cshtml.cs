@@ -46,7 +46,9 @@ namespace BugTrackingApplication.Pages.Bugs
 
         public async Task OnPostAsync(int? id)
         {
-            var bug = await _context.Bugs.FirstOrDefaultAsync(m => m.ID == id);
+            var bug = await _context.Bugs.FindAsync(id);
+            var project = await _context.Projects.FindAsync(bug.ProjectID);
+
             if (bug != null)
             {
                 bug.IsOpen = !bug.IsOpen;
@@ -63,6 +65,10 @@ namespace BugTrackingApplication.Pages.Bugs
                     User = _userManager.GetUserId(HttpContext.User)
                     
                 });
+
+                bug.Updated = DateTime.Now;
+                project.Updated = DateTime.Now;
+
                 await _context.SaveChangesAsync();
             }
 
