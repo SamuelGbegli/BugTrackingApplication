@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.AspNetCore.Identity;
+using NuGet.Packaging;
 
 namespace BugTrackingApplication.Pages.Bugs
 {
@@ -19,6 +20,13 @@ namespace BugTrackingApplication.Pages.Bugs
         public string Sort { get; set; }
         public string Order { get; set; }
 
+        public bool LowSeverity { get; set; }
+        public bool MidSeverity { get; set; }
+        public bool HighSeverity { get; set; }
+
+        public List<Severity> SelectedSeverities { get; set; } = new List<Severity>();
+        public string OpenFilter { get; set; }
+
         public IndexModel(BugTrackingApplication.Data.ApplicationDbContext context,
             UserManager<IdentityUser> userManager)
         {
@@ -27,27 +35,50 @@ namespace BugTrackingApplication.Pages.Bugs
         }
 
         public Project Project { get; set; }
-        public IList<Bug> Bugs { get;set; } = default!;
+        public IList<Bug> Bugs { get;set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id, string sort, string order)
+        public async Task<IActionResult> OnGetAsync(int? id, string sort, string order,
+            string openfilter, bool lowseverity, bool medseverity, bool highseverity)
         {
             if (_context.Bugs != null && id is not null)
             {
                 Sort = sort;
                 Order = order;
+                OpenFilter = openfilter;
+
+                LowSeverity = lowseverity;
+                MidSeverity = medseverity;
+                HighSeverity = highseverity;
+                
+                if(LowSeverity) SelectedSeverities.Add(Severity.Low);
+                if (MidSeverity) SelectedSeverities.Add(Severity.Medium);
+                if (HighSeverity) SelectedSeverities.Add(Severity.High);
+
+                if (!SelectedSeverities.Any()) SelectedSeverities = new List<Severity> {
+                    Severity.Low,
+                    Severity.Medium,
+                    Severity.High};
 
                 var project = _context.Projects.Find(id);
                 var bugsIQ = from b in _context.Bugs
-                             select b;
-
-                bugsIQ = bugsIQ.OrderByDescending(b => b.Updated);
+                             where SelectedSeverities.Contains(b.Severity)
+                             select b;                
 
                 if (project != null)
                 {
 
                     if (project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
+                    bugsIQ = bugsIQ.Where(b => b.ProjectID == id);                   
 
-                    bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
+                    switch (OpenFilter)
+                    {
+                        case "Open bugs only":
+                            bugsIQ = bugsIQ.Where(b => b.IsOpen);
+                            break;
+                        case "Closed bugs only":
+                            bugsIQ = bugsIQ.Where(b => !b.IsOpen);
+                            break;
+                    }
 
                     switch (sort)
                     {
@@ -71,6 +102,7 @@ namespace BugTrackingApplication.Pages.Bugs
 
                     Project = _context.Projects.Find(id);
                     Bugs = await bugsIQ.ToListAsync();
+
                     return Page();
                 }
             }

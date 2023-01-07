@@ -27,42 +27,50 @@
     </form>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Comments[0].Text)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comments[0].Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comments[0].Updated)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Comments) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Text)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated)
-            </td>
-            <td>
-                    @if (item.CanEdit) {
-                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> <span>|</span>
-                    
-                    }
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+@if(Model.Comments.Count > 0){
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comments[0].Text)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comments[0].Created)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comments[0].Updated)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Comments)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Text)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Updated)
+                    </td>
+                    <td>
+                        @if (item.CanEdit)
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> <span>|</span>
+
+                        }
+                        <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 }
-    </tbody>
-</table>
+else{
+    <h3>There are currently no comments.</h3>
+}

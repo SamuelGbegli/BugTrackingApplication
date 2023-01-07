@@ -1,13 +1,7 @@
 ﻿Additional features
 
 Implement external login systems
-
-sort projects by name, date created and modified and number of bugs in ascending and desecending order
-sort bugs by title, severity, date created and modified and status
-filter bugs based on severity and status
-allow users to highlight bugs
-
-search for projects and bugs
-cooments for whenever a bug's severity is
+Clean up pages
+Go over and fix bugs in the program
 
 New features:

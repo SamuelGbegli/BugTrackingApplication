@@ -51,6 +51,16 @@ namespace BugTrackingApplication.Pages.Projects
             if (project != null)
             {
                 Project = project;
+                var BugsToRemove = _context.Bugs.Where(b => b.ProjectID == Project.ID);
+                var CommentsToRemove = new List<Comment>();
+                foreach (var b in BugsToRemove)
+                {
+                    CommentsToRemove.AddRange(_context.Comments.Where(c => c.BugID == b.ID));
+                }
+
+                _context.Comments.RemoveRange(CommentsToRemove);
+                _context.Bugs.RemoveRange(BugsToRemove);
+
                 _context.Projects.Remove(Project);
                 await _context.SaveChangesAsync();
             }

@@ -31,66 +31,72 @@
     <input type="submit" class="btn btn-primary" value="Sort"/>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Projects[0].Project.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Projects[0].Project.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Projects[0].Project.Link)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Projects[0].Project.Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Projects[0].Project.Updated)
-            </th>
-            <th>
-                Open bugs
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Projects)
-        {
+@if(Model.Projects.Count > 0){
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Project.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Project.Description)
-                </td>
-                <td>
-                    @if(item.Project.Link is not null)
-                    {
-                        <a href="@item.Project.Link">@item.Project.Link</a>
-                    }
-                    else
-                    {
-                        <span>n/a</span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Project.Created)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Project.Updated)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BugCount)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Project.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Project.ID">Details</a> |
-                    <a asp-page="../Bugs/Index" asp-route-id="@item.Project.ID">View bugs</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Project.ID">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Project.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Project.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Project.Link)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Project.Created)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Project.Updated)
+                </th>
+                <th>
+                    Open bugs
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Projects)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Project.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Project.Description)
+                    </td>
+                    <td>
+                        @if (item.Project.Link is not null)
+                        {
+                            <a href="@item.Project.Link">@item.Project.Link</a>
+                        }
+                        else
+                        {
+                            <span>n/a</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Project.Created)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Project.Updated)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BugCount)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Project.ID">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.Project.ID">Details</a> |
+                        <a asp-page="../Bugs/Index" asp-route-id="@item.Project.ID">View bugs</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Project.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else{
+    <h3>There are currently no projects</h3>
+}
