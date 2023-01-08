@@ -2,48 +2,36 @@
 @model BugTrackingApplication.Pages.Bugs.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Bugs in " + Model.Project.Name;
 }
 
-@{
-    if (Model.Project is not null)
-    {
-        <h1>List of bugs in @Model.Project.Name</h1>
-        <p>Total bugs: @Model.Bugs.Count()</p>
-        <p>Bugs currently open: @Model.Bugs.Where(b => b.IsOpen).Count()</p>
-    }
-    else
-    {
-        <h1>List of Bugs</h1>
-    }
-}
-
-
+<h1>List of bugs in @Model.Project.Name</h1>
 
 <p>
-    <a asp-page="Create" asp-route-id="@Model.Project.ID">Add new bug</a>
+    <a asp-page="Create" class="btn btn-primary" asp-route-id="@Model.Project.ID">Add new bug</a>
 </p>
-
+@if (Model.TotalBugCount > 0)
+{
+    <div class="col-4">
 <form method="get">
     <input type="hidden" name="id" asp-for="@Model.Project.ID" />
     <label>Sort by</label>
     <br />
-    <select name="Sort" asp-for="@Model.Sort">
+    <select name="Sort" asp-for="@Model.Sort" class="form-control">
         <option>Last updated</option>
-        <option>Date created</option>
         <option>Severity</option>
         <option>Title</option>
     </select>
     <br />
     <label>Order</label>
-    <select name="Order" asp-for="@Model.Order">
+    <select name="Order" asp-for="@Model.Order" class="form-control">
         <option>Descending</option>
         <option>Ascending</option>
     </select>
     <br />
     <label>Bug status</label>
     <br />
-    <select asp-for="@Model.OpenFilter">
+    <select asp-for="@Model.OpenFilter" class="form-control">
         <option>All bugs</option>
         <option>Open bugs only</option>
         <option>Closed bugs only</option>
@@ -51,17 +39,26 @@
     <br />
     <label>Bug severity</label>
     <br />
-    <label>Low</label>
-    <input type="checkbox" asp-for="@Model.LowSeverity" name="lowseverity"/>
-    <label>Medium</label>
-    <input type="checkbox" asp-for="@Model.MidSeverity" name="MedSeverity" />
-    <label>High</label>
-    <input type="checkbox" asp-for="@Model.HighSeverity" name="HighSeverity" />
+    <label class="form-check-label">Low</label>
+    <input type="checkbox" asp-for="@Model.LowSeverity" name="lowseverity" class="form-check-input"/>
+    <label class="form-check-label">Medium</label>
+    <input type="checkbox" asp-for="@Model.MidSeverity" name="MedSeverity" class="form-check-input" />
+    <label class="form-check-label">High</label>
+    <input type="checkbox" asp-for="@Model.HighSeverity" name="HighSeverity" class="form-check-input" />
     <br />
     <input type="submit" class="btn btn-primary" value="Sort" asp-route-id="@Model.Project.ID" />
 </form>
+</div>
+<hr />
 
-@if(Model.Bugs.Count >0 ){
+
+    <p>Total bugs: @Model.TotalBugCount</p>
+    <p>Bugs currently open: @Model.TotalBugsOpen</p>
+    <br />
+    @if(Model.Bugs.Count != Model.TotalBugCount)
+    {
+        <p>Showing @Model.Bugs.Count() bugs out of @Model.TotalBugCount</p>
+    }
     <table class="table">
         <thead>
             <tr>
@@ -72,13 +69,7 @@
                     @Html.DisplayNameFor(model => model.Bugs[0].Severity)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Bugs[0].Description)
-                </th>
-                <th>
                     Status
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Bugs[0].Created)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Bugs[0].Updated)
@@ -97,9 +88,6 @@
                         @Html.DisplayFor(modelItem => item.Severity)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
                         @if (item.IsOpen)
                         {
                             <span>Open</span>
@@ -110,15 +98,12 @@
                         }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Created)
-                    </td>
-                    <td>
                         @Html.DisplayFor(modelItem => item.Updated)
                     </td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-page="../Comments/Index" asp-route-id="@item.ID">View comments</a> |
-                        <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-page="./Details" asp-route-id="@item.ID">Details</a><br />
+                        <a asp-page="../Comments/Index" asp-route-id="@item.ID">Comments</a><br />
+                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a><br />
                         <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
                 </tr>
@@ -128,5 +113,5 @@
 
 }
 else{
-    <h3>There are currently no bugs.</h3>
+    <h5 class="text-center">There are currently no bugs. <a asp-page="./Create" asp-route-id="@Model.Project.ID">Click here to add one.</a></h5>
 }

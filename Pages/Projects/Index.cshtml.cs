@@ -9,7 +9,6 @@ using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.AspNetCore.Identity;
 using BugTrackingApplication.Models.ViewModels;
-using BugTrackingApplication.Models.SearchFilterModels;
 
 namespace BugTrackingApplication.Pages.Projects
 {
@@ -83,6 +82,28 @@ namespace BugTrackingApplication.Pages.Projects
                         break;
                 }
 
+            }
+        }
+    
+        public async Task OnPostDelete(int id, string sort, string order, bool openbugsonly)
+        {
+            try
+            {
+                var project = await _context.Projects.FindAsync(id);
+                var bugs = _context.Bugs.Where(b => b.ProjectID == id).ToList();
+                var comments = _context.Comments.Where(c => bugs.Any(b => b.ID == c.BugID)).ToList();
+
+                _context.Comments.RemoveRange(comments);
+                _context.Bugs.RemoveRange(bugs);
+                _context.Projects.Remove(project);
+
+                await _context.SaveChangesAsync();
+
+                await OnGetAsync(sort, order, openbugsonly);
+            }
+            catch
+            {
+                NotFound();
             }
         }
     }

@@ -64,11 +64,18 @@
 
 <div>
     <form method="post">
-        <input type="submit" class="btn btn-primary" value="Toggle status"/>
+        @if (Model.Bug.IsOpen)
+        {
+            <input type="submit" class="btn btn-primary" value="Close bug" />
+        }
+        else
+        {
+            <input type="submit" class="btn btn-primary" value="Reopen bug" />
+        }
     </form>
 </div>
 
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Bug?.ID">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="./Edit" asp-route-id="@Model.Bug.ID">Edit</a> |
+    <a asp-page="./Index" asp-route-id="@Model.Bug.ProjectID">Back to List</a>
 </div>

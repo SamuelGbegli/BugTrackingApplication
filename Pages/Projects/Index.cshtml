@@ -2,36 +2,37 @@
 @model BugTrackingApplication.Pages.Projects.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Projects";
 }
 
-<h1>List of projects</h1>
-
+<h2>Projects</h2>
+<br />
 <p>
-    <a asp-page="Create">Add new project</a>
+    <a asp-page="Create" class="btn btn-primary">Add new project</a>
 </p>
-
-<form method="get">
-    <label>Sort by:</label>
-    <select name="Sort" asp-for="Sort">
+@if (Model.Projects.Count > 0)
+{
+<form method="get" class="col-md-4">
+        <label class="control-label">Sort by:</label>
+    <select name="Sort" asp-for="Sort" class="form-control">
         <option>Date created</option>
         <option>Last updated</option>
         <option>Name</option>
         <option>Open bugs</option>
     </select>
-    <label>Order:</label>
-    <select name="Order" asp-for="Order">
+        <label class="control-label">Order:</label>
+    <select name="Order" asp-for="Order" class="form-control">
         <option>Ascending</option>
         <option>Descending</option>
     </select>
     <br />
-    <label>Only show projects with open bugs</label>
-    <input type="checkbox" name="OpenBugsOnly" asp-for="OpenBugsOnly"/>
+        <label class="control-label">Only show projects with open bugs</label>
+    <input type="checkbox" name="OpenBugsOnly" asp-for="OpenBugsOnly" />
     <br/>
     <input type="submit" class="btn btn-primary" value="Sort"/>
 </form>
 
-@if(Model.Projects.Count > 0){
+
     <table class="table">
         <thead>
             <tr>
@@ -39,10 +40,7 @@
                     @Html.DisplayNameFor(model => model.Projects[0].Project.Name)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Projects[0].Project.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Projects[0].Project.Link)
+                   <span>Summary</span>
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Projects[0].Project.Created)
@@ -62,19 +60,14 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Project.Name)
+                        @if(item.Project.Link is not null)
+                        {
+                            <br/>
+                            <span>(<a href="@item.Project.Link">Link</a>)</span>
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Project.Description)
-                    </td>
-                    <td>
-                        @if (item.Project.Link is not null)
-                        {
-                            <a href="@item.Project.Link">@item.Project.Link</a>
-                        }
-                        else
-                        {
-                            <span>n/a</span>
-                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Project.Created)
@@ -86,10 +79,11 @@
                         @Html.DisplayFor(modelItem => item.BugCount)
                     </td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@item.Project.ID">Edit</a> |
-                        <a asp-page="./Details" asp-route-id="@item.Project.ID">Details</a> |
-                        <a asp-page="../Bugs/Index" asp-route-id="@item.Project.ID">View bugs</a> |
-                        <a asp-page="./Delete" asp-route-id="@item.Project.ID">Delete</a>
+                        <a asp-page="./Edit" asp-route-id="@item.Project.ID">Edit</a>
+                        <br />
+                        <a asp-page="../Bugs/Index" asp-route-id="@item.Project.ID">View bugs</a>
+                        <br />
+                        <a asp-page-handler="delete" asp-route-id="@item.Project.ID">Delete</a>
                     </td>
                 </tr>
             }
@@ -98,5 +92,7 @@
 
 }
 else{
-    <h3>There are currently no projects</h3>
+    <div class="text-center">
+    <h5>There are currently no projects. <a asp-page="./Create">Click here to add one.</a></h5>
+    </div>
 }

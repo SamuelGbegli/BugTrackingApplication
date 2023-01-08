@@ -14,7 +14,7 @@ namespace BugTrackingApplication.Pages.Bugs
 {
     public class IndexModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
         public string Sort { get; set; } = "Last updated";
@@ -27,8 +27,7 @@ namespace BugTrackingApplication.Pages.Bugs
         public List<Severity> SelectedSeverities { get; set; } = new List<Severity>();
         public string OpenFilter { get; set; }
 
-        public IndexModel(BugTrackingApplication.Data.ApplicationDbContext context,
-            UserManager<IdentityUser> userManager)
+        public IndexModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -36,6 +35,12 @@ namespace BugTrackingApplication.Pages.Bugs
 
         public Project Project { get; set; }
         public IList<Bug> Bugs { get;set; }
+
+        public int TotalBugCount { get; set; }
+        public int TotalBugsOpen { get; set; }
+
+        [BindProperty]
+        public BugStatusHelper BugStatusHelper { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id, string sort, string order,
             string openfilter, bool lowseverity, bool medseverity, bool highseverity)
@@ -64,11 +69,15 @@ namespace BugTrackingApplication.Pages.Bugs
                              where SelectedSeverities.Contains(b.Severity)
                              select b;                
 
+
                 if (project != null)
                 {
 
                     if (project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
-                    bugsIQ = bugsIQ.Where(b => b.ProjectID == id);                   
+                    bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
+
+                    TotalBugCount = bugsIQ.Count();
+                    TotalBugsOpen = bugsIQ.Where(b => b.IsOpen).Count();
 
                     switch (OpenFilter)
                     {
@@ -102,10 +111,13 @@ namespace BugTrackingApplication.Pages.Bugs
 
                     Project = _context.Projects.Find(id);
                     Bugs = await bugsIQ.ToListAsync();
+
                     return Page();
                 }
             }
             return NotFound();
         }
+
+        
     }
 }
