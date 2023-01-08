@@ -1,16 +1,16 @@
-﻿@page
+﻿@page "{id:int?}"
 @model BugTrackingApplication.Pages.Comments.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit comment";
 }
 
-<h1>Edit</h1>
+<h3>Edit comment</h3>
 
 <h4>Comment</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Comment.ID" />
@@ -19,21 +19,10 @@
                 <input asp-for="Comment.Text" class="form-control" />
                 <span asp-validation-for="Comment.Text" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Comment.Created" class="control-label"></label>
-                <input asp-for="Comment.Created" class="form-control" />
-                <span asp-validation-for="Comment.Created" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Comment.Updated" class="control-label"></label>
-                <input asp-for="Comment.Updated" class="form-control" />
-                <span asp-validation-for="Comment.Updated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Comment.BugID" class="control-label"></label>
-                <select asp-for="Comment.BugID" class="form-control" asp-items="ViewBag.BugID"></select>
-                <span asp-validation-for="Comment.BugID" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="Comment.Created" />
+            <input type="hidden" asp-for="Comment.Updated" />
+            <input type="hidden" asp-for="Comment.BugID" />
+            <input type="hidden" asp-for="Comment.User" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -44,7 +33,7 @@
 <div>
     <a asp-page="./Index">Back to List</a>
 </div>
-
+ 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

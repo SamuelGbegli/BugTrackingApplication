@@ -55,7 +55,7 @@ namespace BugTrackingApplication.Pages.Bugs
 
             _context.Comments.Add(new Comment
             {
-                Text = "Created bug " + Bug.Title + " on " + DateTime.Now.ToString(),
+                Text = "Created on " + DateTime.Now.ToString(),
                 BugID = Bug.ID,
                 Bug = Bug,
                 CanEdit = false,

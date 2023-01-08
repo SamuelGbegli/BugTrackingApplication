@@ -5,11 +5,10 @@
     ViewData["Title"] = "Bugs in " + Model.Project.Name;
 }
 
-<h1>List of bugs in @Model.Project.Name</h1>
-
-<p>
-    <a asp-page="Create" class="btn btn-primary" asp-route-id="@Model.Project.ID">Add new bug</a>
-</p>
+<h3>List of bugs in @Model.Project.Name</h3>
+<br/>
+<a class="btn btn-primary" asp-page="./Create" asp-route-id="@Model.Project.ID">Add new bug</a>
+<a class="btn btn-secondary" asp-page="./Projects">Go to project view</a>
 @if (Model.TotalBugCount > 0)
 {
     <div class="col-4">
@@ -51,14 +50,15 @@
 </div>
 <hr />
 
-
-    <p>Total bugs: @Model.TotalBugCount</p>
-    <p>Bugs currently open: @Model.TotalBugsOpen</p>
+    
+    <p>Open bugs: @Model.TotalBugsOpen</p>
+        <p>Total bugs: @Model.TotalBugCount</p>
     <br />
     @if(Model.Bugs.Count != Model.TotalBugCount)
     {
-        <p>Showing @Model.Bugs.Count() bugs out of @Model.TotalBugCount</p>
+        <p>Showing @Model.Bugs.Count()/@Model.TotalBugCount bugs</p>
     }
+
     <table class="table">
         <thead>
             <tr>
@@ -109,7 +109,12 @@
                 </tr>
             }
         </tbody>
-    </table>
+        </table>
+    }
+    else
+    {
+        <h6 class="text-center">No bugs were found.</h6>
+    }
 
 }
 else{

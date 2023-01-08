@@ -2,13 +2,14 @@
 @model BugTrackingApplication.Pages.Comments.IndexModel
 
 @{
-    ViewData["Title"] = "Comments";
+    ViewData["Title"] = "Comments for " + Model.Bug.Title;
 }
 
-<h1>Comments</h1>
+<h3>Comments</h3>
 
 <p>
-    <a asp-page="../Bugs/Index" asp-route-id="@Model.Bug.ProjectID">Go back to project overview</a>
+    <a asp-page="../Bugs/Details" asp-route-id="@Model.Bug.ID">Bug summary</a>
+    <a asp-page="../Bugs/Index" asp-route-id="@Model.Bug.ProjectID">Project overview</a>
 </p>
 
 <div class="row">
@@ -16,7 +17,7 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label class="control-label"></label>
-            <input asp-for="Comment.Text" class="form-control" />
+            <input asp-for="Comment.Text" placeholder="Enter comment here..." class="form-control" />
             <span asp-validation-for="Comment.Text" class="text-danger"></span>
         </div>
         <input type="hidden" asp-for="Comment.BugID"/>
@@ -26,13 +27,13 @@
         </div>
     </form>
 </div>
-
+<hr/>
 @if(Model.Comments.Count > 0){
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Comments[0].Text)
+                    Comment
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Comments[0].Created)
@@ -62,7 +63,6 @@
                             <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> <span>|</span>
 
                         }
-                        <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
                         <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
                 </tr>
@@ -72,5 +72,5 @@
 
 }
 else{
-    <h3>There are currently no comments.</h3>
+    <h5 class="text-center">There are currently no comments.</h5>
 }

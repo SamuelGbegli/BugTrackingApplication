@@ -2,12 +2,10 @@
 @model BugTrackingApplication.Pages.Projects.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit " + Model.Project.Name;
 }
 
-<h1>Edit</h1>
-
-<h4>Project</h4>
+<h3>Edit @Model.Project.Name</h3>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -31,15 +29,16 @@
             </div>
             <input type="hidden" asp-for="Project.Created"/>
             <input type="hidden" asp-for="Project.User" />
+            <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary">Return</a>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {

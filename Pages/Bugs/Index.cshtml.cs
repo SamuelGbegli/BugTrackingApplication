@@ -39,9 +39,6 @@ namespace BugTrackingApplication.Pages.Bugs
         public int TotalBugCount { get; set; }
         public int TotalBugsOpen { get; set; }
 
-        [BindProperty]
-        public BugStatusHelper BugStatusHelper { get; set; }
-
         public async Task<IActionResult> OnGetAsync(int? id, string sort, string order,
             string openfilter, bool lowseverity, bool medseverity, bool highseverity)
         {
@@ -66,6 +63,7 @@ namespace BugTrackingApplication.Pages.Bugs
 
                 var project = _context.Projects.Find(id);
                 var bugsIQ = from b in _context.Bugs
+                             where b.ProjectID == id
                              where SelectedSeverities.Contains(b.Severity)
                              select b;                
 
@@ -76,8 +74,8 @@ namespace BugTrackingApplication.Pages.Bugs
                     if (project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
                     bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
 
-                    TotalBugCount = bugsIQ.Count();
-                    TotalBugsOpen = bugsIQ.Where(b => b.IsOpen).Count();
+                    TotalBugCount = _context.Bugs.Where(b => b.ProjectID == id).Count();
+                    TotalBugsOpen = _context.Bugs.Where(b => b.ProjectID == id && b.IsOpen).Count();
 
                     switch (OpenFilter)
                     {

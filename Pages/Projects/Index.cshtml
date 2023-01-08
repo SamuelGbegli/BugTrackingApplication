@@ -2,28 +2,26 @@
 @model BugTrackingApplication.Pages.Projects.IndexModel
 
 @{
-    ViewData["Title"] = "Projects";
+    ViewData["Title"] = "List of projects";
 }
 
-<h2>Projects</h2>
+<h3>List of projects</h3>
 <br />
-<p>
-    <a asp-page="Create" class="btn btn-primary">Add new project</a>
-</p>
+
 @if (Model.Projects.Count > 0)
 {
 <form method="get" class="col-md-4">
         <label class="control-label">Sort by:</label>
-    <select name="Sort" asp-for="Sort" class="form-control">
-        <option>Date created</option>
-        <option>Last updated</option>
-        <option>Name</option>
-        <option>Open bugs</option>
+        <select name="Sort" asp-for="Sort" class="form-control">
+            <option>Last updated</option>
+            <option>Date created</option>
+            <option>Name</option>
+            <option>Open bugs</option>
     </select>
         <label class="control-label">Order:</label>
-    <select name="Order" asp-for="Order" class="form-control">
+        <select name="Order" asp-for="Order" class="form-control">
+            <option>Descending</option>
         <option>Ascending</option>
-        <option>Descending</option>
     </select>
     <br />
         <label class="control-label">Only show projects with open bugs</label>
@@ -32,7 +30,10 @@
     <input type="submit" class="btn btn-primary" value="Sort"/>
 </form>
 
+<hr/>
 
+    <a asp-page="Create" class="btn btn-primary">Add new project</a>
+<br />
     <table class="table">
         <thead>
             <tr>
@@ -40,7 +41,7 @@
                     @Html.DisplayNameFor(model => model.Projects[0].Project.Name)
                 </th>
                 <th>
-                   <span>Summary</span>
+                   <span>Description</span>
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Projects[0].Project.Created)
@@ -67,7 +68,14 @@
                         }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Project.Description)
+                        @if(item.Project.Description is not null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Project.Description)
+                        }
+                        else
+                        {
+                            <span>n/a</span>
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Project.Created)
@@ -83,7 +91,7 @@
                         <br />
                         <a asp-page="../Bugs/Index" asp-route-id="@item.Project.ID">View bugs</a>
                         <br />
-                        <a asp-page-handler="delete" asp-route-id="@item.Project.ID">Delete</a>
+                        <a asp-page="./Delete" asp-route-id="@item.Project.ID">Delete</a>
                     </td>
                 </tr>
             }

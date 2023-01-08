@@ -5,9 +5,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Project</h4>
+<h3>Add new project</h3>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -28,15 +26,13 @@
                 <input type="url" asp-for="Project.Link" class="form-control" />
                 <span asp-validation-for="Project.Link" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary">Return</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
