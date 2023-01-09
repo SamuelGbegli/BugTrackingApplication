@@ -14,10 +14,10 @@ namespace BugTrackingApplication.Pages.Comments
 {
     public class EditModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(BugTrackingApplication.Data.ApplicationDbContext context,
+        public EditModel(ApplicationDbContext context,
             UserManager<IdentityUser> userManager)
         {
             _context = context;
@@ -40,46 +40,35 @@ namespace BugTrackingApplication.Pages.Comments
                 return NotFound();
             }
             Comment = comment;
-           ViewData["BugID"] = new SelectList(_context.Bugs, "ID", "Title");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (!ModelState.IsValid)
+
+            var commentToUpdate = await _context.Comments
+                .Include(c => c.Bug)
+                .FirstAsync(c => c.ID == id);
+            if (commentToUpdate == null) return NotFound();
+            if (commentToUpdate.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
+
+            if(await TryUpdateModelAsync<Comment>(
+                commentToUpdate, "comment", c => c.Text, c => c.CanEdit))
             {
-                return Page();
-            }
+                var project = await _context.Projects.FindAsync(commentToUpdate.Bug.ProjectID);
 
-            _context.Attach(Comment).State = EntityState.Modified;
-
-            try
-            {
-                Comment.Updated = DateTime.Now;
-
-                var bug = _context.Bugs.First(b => b.ID == Comment.BugID);
-                var project = _context.Projects.First(p => p.ID == bug.ProjectID);
-
-                bug.Updated = DateTime.Now;
+                commentToUpdate.Updated = DateTime.Now;
+                commentToUpdate.Bug.Updated = DateTime.Now;
                 project.Updated = DateTime.Now;
 
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CommentExists(Comment.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return RedirectToPage("./Index");
+                return RedirectToPage("./Index", new { id = commentToUpdate.BugID });
+            }
+            
+            return Page();
         }
 
         private bool CommentExists(int id)

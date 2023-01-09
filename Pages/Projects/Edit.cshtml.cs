@@ -30,7 +30,7 @@ namespace BugTrackingApplication.Pages.Projects
         {
             if (id == null || _context.Projects == null) return NotFound();
 
-            var project =  await _context.Projects.FirstOrDefaultAsync(m => m.ID == id);
+            var project =  await _context.Projects.FindAsync(id);
             if (project == null) return NotFound();
             if(project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
 
@@ -40,34 +40,24 @@ namespace BugTrackingApplication.Pages.Projects
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+        public async Task<IActionResult> OnPostAsync(int id)
+        {            
 
-            _context.Attach(Project).State = EntityState.Modified;
+            var projectToUpdate = await _context.Projects.FindAsync(id);
+            if (projectToUpdate == null) return NotFound();
+            if (projectToUpdate.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
 
-            try
+            if (await TryUpdateModelAsync<Project>(
+                projectToUpdate, "project",
+                p => p.Name, p => p.Description, p => p.Link))
             {
-                Project.Updated = DateTime.Now;
+                projectToUpdate.Updated = DateTime.Now;
 
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectExists(Project.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            return Page();
         }
 
         private bool ProjectExists(int id)

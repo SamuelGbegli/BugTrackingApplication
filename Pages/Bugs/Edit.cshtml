@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int?}"
 @model BugTrackingApplication.Pages.Bugs.EditModel
 
 @{
@@ -28,15 +28,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="Bug.Description" class="control-label"></label>
-                <input asp-for="Bug.Description" class="form-control" />
+                <textarea asp-for="Bug.Description" class="form-control"></textarea>
                 <span asp-validation-for="Bug.Description" class="text-danger"></span>
             </div>
-
-            <input type="hidden" asp-for="Bug.IsOpen" />
-            <input type="hidden" asp-for="Bug.Created" />
-            <input type="hidden" asp-for="Bug.Updated" />
-            <input type="hidden" asp-for="Bug.ProjectID"/>
-            <input type="hidden" asp-for="Bug.User" />
             <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

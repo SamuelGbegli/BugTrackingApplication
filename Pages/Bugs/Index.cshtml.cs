@@ -20,10 +20,6 @@ namespace BugTrackingApplication.Pages.Bugs
         public string Sort { get; set; } = "Last updated";
         public string Order { get; set; } = "Descending";
 
-        public bool LowSeverity { get; set; }
-        public bool MidSeverity { get; set; }
-        public bool HighSeverity { get; set; }
-
         public List<Severity> SelectedSeverities { get; set; } = new List<Severity>();
         public string OpenFilter { get; set; }
 
@@ -34,13 +30,13 @@ namespace BugTrackingApplication.Pages.Bugs
         }
 
         public Project Project { get; set; }
-        public IList<Bug> Bugs { get;set; }
+        public IList<Bug> Bugs { get; set; }
 
         public int TotalBugCount { get; set; }
         public int TotalBugsOpen { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id, string sort, string order,
-            string openfilter, bool lowseverity, bool medseverity, bool highseverity)
+            string openfilter, string[] severity)
         {
             if (_context.Bugs != null && id is not null)
             {
@@ -48,30 +44,26 @@ namespace BugTrackingApplication.Pages.Bugs
                 Order = order;
                 OpenFilter = openfilter;
 
-                LowSeverity = lowseverity;
-                MidSeverity = medseverity;
-                HighSeverity = highseverity;
-                
-                if(LowSeverity) SelectedSeverities.Add(Severity.Low);
-                if (MidSeverity) SelectedSeverities.Add(Severity.Medium);
-                if (HighSeverity) SelectedSeverities.Add(Severity.High);
+                if (severity.Contains("l")) SelectedSeverities.Add(Severity.Low);
+                if (severity.Contains("m")) SelectedSeverities.Add(Severity.Medium);
+                if (severity.Contains("h")) SelectedSeverities.Add(Severity.High);
 
-                if (!SelectedSeverities.Any()) SelectedSeverities = new List<Severity> {
-                    Severity.Low,
-                    Severity.Medium,
-                    Severity.High};
+                Project = await _context.Projects
+                    .Include(p => p.Bugs)
+                    .FirstAsync(p => p.ID == id);
 
-                var project = _context.Projects.Find(id);
-                var bugsIQ = from b in _context.Bugs
-                             where b.ProjectID == id
-                             where SelectedSeverities.Contains(b.Severity)
-                             select b;                
+                var bugsIQ = from b in Project.Bugs
+                             select b;
 
+                if (SelectedSeverities.Any())
+                {
+                    bugsIQ = bugsIQ.Where(b => SelectedSeverities.Contains(b.Severity));
+                }
 
-                if (project != null)
+                if (Project != null)
                 {
 
-                    if (project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
+                    if (Project.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
                     bugsIQ = bugsIQ.Where(b => b.ProjectID == id);
 
                     TotalBugCount = _context.Bugs.Where(b => b.ProjectID == id).Count();
@@ -108,7 +100,7 @@ namespace BugTrackingApplication.Pages.Bugs
                     }
 
                     Project = _context.Projects.Find(id);
-                    Bugs = await bugsIQ.ToListAsync();
+                    Bugs = bugsIQ.ToList();
 
                     return Page();
                 }
@@ -116,6 +108,7 @@ namespace BugTrackingApplication.Pages.Bugs
             return NotFound();
         }
 
-        
+
     }
 }
+    

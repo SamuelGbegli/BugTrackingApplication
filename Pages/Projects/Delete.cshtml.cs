@@ -13,10 +13,10 @@ namespace BugTrackingApplication.Pages.Projects
 {
     public class DeleteModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public DeleteModel(BugTrackingApplication.Data.ApplicationDbContext context,
+        public DeleteModel(ApplicationDbContext context,
             UserManager<IdentityUser> userManager)
         {
             _context = context;

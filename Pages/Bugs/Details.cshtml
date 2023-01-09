@@ -1,15 +1,14 @@
-﻿@page
+﻿@page "{id:int?}"
 @model BugTrackingApplication.Pages.Bugs.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Bug information";
 }
 
-<h1>Details</h1>
-
+<h3>Bug information</h3>
+<hr />
 <div>
-    <h4>Bug</h4>
-    <hr />
+    
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Bug.Title)
@@ -18,16 +17,23 @@
             @Html.DisplayFor(model => model.Bug.Title)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Bug.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @if(Model.Bug.Description is not null)
+            {
+                @Html.DisplayFor(model => model.Bug.Description)
+            }
+            else
+            {
+                <span>n/a</span>
+            }
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Bug.Severity)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Bug.Severity)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Bug.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Bug.Description)
         </dd>
         <dt class="col-sm-2">
             Status
@@ -42,22 +48,16 @@
             }
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Bug.Created)
+            Created on
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Bug.Created)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Bug.Updated)
+            Last updated
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Bug.Updated)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Bug.Project)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Bug.Project.Name)
         </dd>
     </dl>
 </div>
@@ -74,8 +74,8 @@
         }
     </form>
 </div>
-
+<br/>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Bug.ID">Edit</a> |
-    <a asp-page="./Index" asp-route-id="@Model.Bug.ProjectID">Back to List</a>
+    <a asp-page="./Edit" asp-route-id="@Model.Bug.ID" class="btn btn-primary">Edit</a> 
+    <a asp-page="./Index" asp-route-id="@Model.Bug.ProjectID" class="btn btn-secondary">Back to List</a>
 </div>

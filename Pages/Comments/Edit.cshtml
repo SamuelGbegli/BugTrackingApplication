@@ -6,8 +6,6 @@
 }
 
 <h3>Edit comment</h3>
-
-<h4>Comment</h4>
 <hr />
 <div class="row">
     <div>
@@ -15,23 +13,20 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Comment.ID" />
             <div class="form-group">
-                <label asp-for="Comment.Text" class="control-label"></label>
-                <input asp-for="Comment.Text" class="form-control" />
+                <textarea asp-for="Comment.Text" class="form-control" placeholder="Enter text here..."></textarea>
                 <span asp-validation-for="Comment.Text" class="text-danger"></span>
-            </div>
+            </div>@*
             <input type="hidden" asp-for="Comment.Created" />
             <input type="hidden" asp-for="Comment.Updated" />
             <input type="hidden" asp-for="Comment.BugID" />
-            <input type="hidden" asp-for="Comment.User" />
+            <input type="hidden" asp-for="Comment.User" />*@
+            <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Index" asp-route-id="@Model.Comment.BugID" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-page="./Index">Back to List</a>
 </div>
  
 @section Scripts {

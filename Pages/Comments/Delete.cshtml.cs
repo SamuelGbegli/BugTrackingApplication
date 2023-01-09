@@ -13,10 +13,10 @@ namespace BugTrackingApplication.Pages.Comments
 {
     public class DeleteModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public DeleteModel(BugTrackingApplication.Data.ApplicationDbContext context,
+        public DeleteModel(ApplicationDbContext context,
             UserManager<IdentityUser> userManager)
         {
             _context = context;
@@ -39,7 +39,10 @@ namespace BugTrackingApplication.Pages.Comments
             {
                 return NotFound();
             }
-            else 
+
+            if (comment.User != _userManager.GetUserId(User)) return Forbid();
+
+            else
             {
                 Comment = comment;
             }

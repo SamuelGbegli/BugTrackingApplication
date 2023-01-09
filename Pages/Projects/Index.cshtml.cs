@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.AspNetCore.Identity;
-using BugTrackingApplication.Models.ViewModels;
 
 namespace BugTrackingApplication.Pages.Projects
 {
@@ -32,7 +31,7 @@ namespace BugTrackingApplication.Pages.Projects
             _userManager = userManager;
         }
 
-        public List<ProjectViewModel> Projects { get; set; } = new List<ProjectViewModel>();
+        public IList<Project> Projects { get; set; }
 
         public async Task OnGetAsync(string sort, string order, bool openbugsonly)
         {
@@ -44,41 +43,30 @@ namespace BugTrackingApplication.Pages.Projects
             {
                 var user = _userManager.GetUserId(HttpContext.User);
 
-                var projectsIQ = from p in _context.Projects
-                                 select p;
+                Projects = await _context.Projects
+                    .Where(p => p.User == user)
+                    .Include(p => p.Bugs)
+                    .ToListAsync();
 
-                projectsIQ = projectsIQ.Where(p => p.User == user);
-
-                foreach (var project in projectsIQ)
-                {
-                    if (OpenBugsOnly)
-                    {
-                        if (_context.Bugs.Where(b => b.ProjectID == project.ID && b.IsOpen).Count() == 0) continue;
-                    }
-                    Projects.Add(new ProjectViewModel
-                    {
-                        Project = project,
-                        BugCount = _context.Bugs.Where(b => b.ProjectID == project.ID && b.IsOpen).Count()
-                    });
-                }
+                if (openbugsonly) Projects = Projects.Where(p => p.Bugs.Any(b => b.IsOpen)).ToList();
 
                 switch (sort)
                 {
                     case "Date created":
-                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Project.Created).ToList();
-                        else Projects = Projects.OrderByDescending(p => p.Project.Created).ToList();
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Created).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.Created).ToList();
                         break;
-                    case "Last updated":
-                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Project.Updated).ToList();
-                        else Projects = Projects.OrderByDescending(p => p.Project.Updated).ToList();
+                    case "Name":
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Name).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.Name).ToList();
                         break;
                     case "Open bugs":
-                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.BugCount).ToList();
-                        else Projects = Projects.OrderByDescending(p => p.BugCount).ToList();
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Bugs.Count()).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.Bugs.Count()).ToList();
                         break;
                     default:
-                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Project.Name).ToList();
-                        else Projects = Projects.OrderByDescending(p => p.Project.Name).ToList();
+                        if (order == "Ascending") Projects = Projects.OrderBy(p => p.Updated).ToList();
+                        else Projects = Projects.OrderByDescending(p => p.Updated).ToList();
                         break;
                 }
 

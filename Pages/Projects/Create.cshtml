@@ -1,4 +1,4 @@
-﻿@page
+﻿@page 
 @model BugTrackingApplication.Pages.Projects.CreateModel
 
 @{
@@ -18,7 +18,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Project.Description" class="control-label"></label>
-                <input  asp-for="Project.Description" class="form-control" />
+                <textarea  asp-for="Project.Description" class="form-control"></textarea>
                 <span asp-validation-for="Project.Description" class="text-danger"></span>
             </div>
             <div class="form-group">

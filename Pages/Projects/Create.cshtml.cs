@@ -13,10 +13,10 @@ namespace BugTrackingApplication.Pages.Projects
 {
     public class CreateModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CreateModel(BugTrackingApplication.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public CreateModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -29,25 +29,32 @@ namespace BugTrackingApplication.Pages.Projects
 
         [BindProperty]
         public Project Project { get; set; }
-        
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-          Project.Created = DateTime.Now;
-            Project.Updated= DateTime.Now;
 
             Project.User = _userManager.GetUserId(HttpContext.User);
 
-            _context.Projects.Add(Project);
-            await _context.SaveChangesAsync();
+            var emptyProject = new Project();
 
-            return RedirectToPage("./Index");
+            if (await TryUpdateModelAsync<Project>(
+                emptyProject, "project",
+                p => p.Name, p => p.Description, p => p.Link,
+                p => p.Created, p => p.Updated, p => p.User)
+                )
+            {
+                _context.Projects.Add(Project);
+
+                Project.Created = DateTime.Now;
+                Project.Updated = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
+
+            return Page();
         }
     }
 }

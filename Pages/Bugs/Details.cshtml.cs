@@ -13,10 +13,10 @@ namespace BugTrackingApplication.Pages.Bugs
 {
     public class DetailsModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public DetailsModel(BugTrackingApplication.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public DetailsModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;

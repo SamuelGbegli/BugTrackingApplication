@@ -30,30 +30,22 @@ namespace BugTrackingApplication.Pages.Comments
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-
-            var bug = _context.Bugs.First(b => b.ID == id);
-
-            if (bug.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
-
-            Bug = bug;
-
             if (_context.Comments != null && id is not null)
             {
-                var commentIQ = from c in _context.Comments
-                                select c;
-                    commentIQ = commentIQ.Where(c => c.BugID == id);
 
-                commentIQ = commentIQ.OrderByDescending(c => c.Updated);
+            var bug = await _context.Bugs
+                    .Include(b => b.Comments).FirstAsync(b => b.ID == id);
 
-                    Comments = await commentIQ
-                    .Include(c => c.Bug).ToListAsync();
+                if (bug.User != _userManager.GetUserId(HttpContext.User)) return Forbid();
+
+                Bug = bug;
 
                 Comment = new Comment
                 {
-                    BugID = (int)id,
+                    BugID = bug.ID,
                     CanEdit = true,
                     User = _userManager.GetUserId(HttpContext.User),
-                    Bug = _context.Bugs.FirstOrDefault(b => b.ID == id)
+                    Bug = bug
                 };
 
                     return Page();
@@ -62,28 +54,32 @@ namespace BugTrackingApplication.Pages.Comments
             return NotFound();
         }
     
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (ModelState.IsValid)
+            var emptyComment = new Comment();
+
+            if(await TryUpdateModelAsync<Comment>(
+                emptyComment, "comment",
+                c => c.Text, c => c.CanEdit, c=> c.User)
+                )
             {
+                var bug = await _context.Bugs
+                    .Include(b => b.Project)
+                    .FirstAsync(b => b.ID == id);
+
                 Comment.Created = DateTime.Now;
                 Comment.Updated = DateTime.Now;
-                Comment.CanEdit = true;
-
-                var bug = _context.Bugs.First(b => b.ID == Comment.BugID);
-                var project = _context.Projects.First(p => p.ID == bug.ProjectID);
 
                 bug.Updated = DateTime.Now;
-                project.Updated = DateTime.Now;
-                Comment.User = _userManager.GetUserId(HttpContext.User);
+                bug.Project.Updated = DateTime.Now;
+
 
                 _context.Comments.Add(Comment);
-
                 await _context.SaveChangesAsync();
-
                 return RedirectToPage("./Index", new { id = Comment.BugID });
             }
             return NotFound();
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int?}"
 @model BugTrackingApplication.Pages.Bugs.DeleteModel
 
 @{
@@ -13,6 +13,6 @@
     <form method="post">
         <input type="hidden" asp-for="Bug.ID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> 
-        <button asp-page="./Index" asp-route-id="@Model.Bug.ProjectID" class="btn btn-secondary">Go back</button>
+        <a asp-page="./Index" asp-route-id="@Model.Bug.ProjectID" class="btn btn-secondary">Go back</a>
     </form>
 </div>

@@ -14,10 +14,10 @@ namespace BugTrackingApplication.Pages.Comments
 {
     public class CreateModel : PageModel
     {
-        private readonly BugTrackingApplication.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CreateModel(BugTrackingApplication.Data.ApplicationDbContext context,
+        public CreateModel(ApplicationDbContext context,
             UserManager<IdentityUser> userManager)
         {
             _context = context;
