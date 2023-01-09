@@ -1,10 +1,122 @@
 ﻿@page
-@model IndexModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@model BugTrackingApplication.Pages.IndexModel
+
 @{
-    ViewData["Title"] = "Home page";
+    if (SignInManager.IsSignedIn(User))
+    {
+        ViewData["Title"] = "List of projects";
+    }
 }
 
-<div class="text-center">
+@if(SignInManager.IsSignedIn(User)) {
+<h3>List of projects</h3>
+<br />
+
+@if (Model.Projects.Count > 0)
+{
+    <form method="get" class="col-md-4">
+        <label class="control-label">Sort by:</label>
+        <select name="Sort" asp-for="Sort" class="form-control">
+            <option>Last updated</option>
+            <option>Date created</option>
+            <option>Name</option>
+            <option>Open bugs</option>
+        </select>
+        <label class="control-label">Order:</label>
+        <select name="Order" asp-for="Order" class="form-control">
+            <option>Descending</option>
+            <option>Ascending</option>
+        </select>
+        <br />
+        <input type="checkbox" name="OpenBugsOnly" asp-for="OpenBugsOnly">
+        
+        <label class="control-label">Only show projects with open bugs</label>
+        <br />
+        <input type="submit" class="btn btn-primary" value="Sort" />
+    </form>
+
+    <hr />
+
+    <a asp-page="./AddProject" class="btn btn-primary">Add new project</a>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Name)
+                </th>
+                <th>
+                    <span>Description</span>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Created)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Projects[0].Updated)
+                </th>
+                <th>
+                    Open bugs
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Projects)
+            {
+                int bugcount = item.Bugs.Where(b => b.IsOpen).Count();
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                        @if (item.Link is not null)
+                        {
+                            <br />
+                            <span>(<a href="@item.Link">Link</a>)</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.Description is not null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Description)
+                        }
+                        else
+                        {
+                            <span>n/a</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Updated)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bugcount)
+                    </td>
+                    <td>
+                        <a asp-page="./EditProject" asp-route-id="@item.ID">Edit</a>
+                        <br />
+                        <a asp-page="./Bugs" asp-route-id="@item.ID">View bugs</a>
+                        <br />
+                        <a asp-page="./DeleteProject" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <div class="text-center">
+        <h5>There are currently no projects. <a asp-page="./Create">Click here to add one.</a></h5>
+    </div>
+}
+}
+else{
+    <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>Learn about<a href= "https://docs.microsoft.com/aspnet/core" > building Web apps with ASP.NET Core</a>.</p>
 </div>
+}

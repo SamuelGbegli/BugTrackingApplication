@@ -1,0 +1,18 @@
+﻿@page "{id:int?}"
+@model BugTrackingApplication.Pages.DeleteBugModel
+
+@{
+    ViewData["Title"] = "Delete " + Model.Bug.Title;
+}
+
+<h3>Delete @Model.Bug.Title</h3>
+
+<p>Are you sure you want to delete @Model.Bug.Title? This cannot be undone.</p>
+
+<div>
+    <form method="post">
+        <input type="hidden" asp-for="Bug.ID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> 
+        <a asp-page="./Bugs" asp-route-id="@Model.Bug.ProjectID" class="btn btn-secondary">Go back</a>
+    </form>
+</div>

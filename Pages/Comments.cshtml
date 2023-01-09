@@ -1,0 +1,78 @@
+﻿@page "{id:int?}"
+@model BugTrackingApplication.Pages.CommentsModel
+
+@{
+    ViewData["Title"] = "Comments for " + Model.Bug.Title;
+}
+
+<h3>Comments for @Model.Bug.Title</h3>
+
+<p>
+    <a asp-page="./BugDetails" asp-route-id="@Model.Bug.ID">Bug summary</a>
+    <a asp-page="./Bugs" asp-route-id="@Model.Bug.ProjectID">Project overview</a>
+</p>
+
+<div class="row">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label"></label>
+            <textarea asp-for="Comment.Text" placeholder="Enter comment here..." class="form-control"></textarea>
+            <span asp-validation-for="Comment.Text" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Comment.BugID" />
+        <input type="hidden" asp-for="Comment.CanEdit" />
+        <input type="hidden" asp-for="Comment.User" />
+        <br/>
+        <div class="form-group">
+            <input type="submit" value="Add" class="btn btn-primary"/>
+        </div>
+    </form>
+</div>
+<hr/>
+@if(Model.Bug.Comments.Count > 0){
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Comment
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comments[0].Created)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comments[0].Updated)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Bug.Comments.OrderByDescending(c => c.Updated))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Text)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Updated)
+                    </td>
+                    <td>
+                        @if (item.CanEdit)
+                        {
+                            <a asp-page="./EditComment" asp-route-id="@item.ID">Edit</a> <span>|</span>
+
+                        }
+                        <a asp-page="./DeleteComment" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else{
+    <h5 class="text-center">There are currently no comments.</h5>
+}
