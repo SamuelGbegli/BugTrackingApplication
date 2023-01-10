@@ -9,9 +9,11 @@ using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackingApplication.Pages
 {
+    [Authorize]
     public class AddBugModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -23,6 +25,7 @@ namespace BugTrackingApplication.Pages
             _context = context;
             _userManager = userManager;
         }
+
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {

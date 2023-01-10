@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackingApplication.Pages
 {
+    [Authorize]
     public class DeleteBugModel : PageModel
     {
         private readonly ApplicationDbContext _context;

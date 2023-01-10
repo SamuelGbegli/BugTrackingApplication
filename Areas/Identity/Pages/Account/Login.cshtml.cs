@@ -115,7 +115,7 @@ namespace BugTrackingApplication.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return RedirectToPage("../Projects/Index");
+                    return RedirectToPage("../Index");
                 }
                 if (result.RequiresTwoFactor)
                 {

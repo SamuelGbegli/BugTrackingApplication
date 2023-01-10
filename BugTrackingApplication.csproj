@@ -5,6 +5,7 @@
     <!--<Nullable>enable</Nullable>-->
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BugTrackingApplication-7da99acd-3a49-413e-a6ce-c957ec4c5d79</UserSecretsId>
+    <RepositoryUrl>https://github.com/SamuelGbegli/BugTrackingApplication</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Pages\" />
     <Folder Include="Pages\User\" />
   </ItemGroup>
 

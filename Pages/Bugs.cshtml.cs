@@ -9,9 +9,11 @@ using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.AspNetCore.Identity;
 using NuGet.Packaging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackingApplication.Pages
 {
+    [Authorize]
     public class BugsModel : PageModel
     {
         private readonly ApplicationDbContext _context;

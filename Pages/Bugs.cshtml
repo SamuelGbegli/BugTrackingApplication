@@ -10,11 +10,6 @@
 <a class="btn btn-primary" asp-page="./AddBug" asp-route-id="@Model.Project.ID">Add new bug</a>
 <a class="btn btn-secondary" asp-page="./Index">View project list</a>
 <br />
-
-<h6>Total bugs: @Model.TotalBugCount</h6>
-<h6>Open bugs: @Model.TotalBugsOpen</h6>
-<br />
-<br />
 @if (Model.TotalBugCount > 0)
 {
     <div class="col-4">
@@ -59,6 +54,8 @@
     </div>
     <hr />
 
+    <h6>Total bugs: @Model.TotalBugCount</h6>
+    <h6>Open bugs: @Model.TotalBugsOpen</h6>
 
 
     @if (Model.Bugs.Count > 0)
@@ -83,6 +80,7 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Bugs[0].Updated)
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>

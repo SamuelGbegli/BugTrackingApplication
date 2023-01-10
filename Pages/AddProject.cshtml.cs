@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BugTrackingApplication.Data;
 using BugTrackingApplication.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackingApplication.Pages
 {
+    [Authorize]
     public class AddProjectModel : PageModel
     {
         private readonly ApplicationDbContext _context;
