@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿
+//Class for describing project bugs
+
 using System.ComponentModel.DataAnnotations;
 
 namespace BugTrackingApplication.Models
@@ -21,6 +22,7 @@ namespace BugTrackingApplication.Models
         public int ProjectID { get; set; }
         public Project Project { get; set; }
 
+        //User ID Property
         public string User { get; set; }
 
         public ICollection<Comment> Comments { get; set; }

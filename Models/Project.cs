@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+//Class for describing a project
+
 using System.ComponentModel.DataAnnotations;
 
 namespace BugTrackingApplication.Models
@@ -15,6 +17,7 @@ namespace BugTrackingApplication.Models
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
 
+        //User ID Property
         public string User { get; set; }
 
         public ICollection<Bug> Bugs { get; set; }
