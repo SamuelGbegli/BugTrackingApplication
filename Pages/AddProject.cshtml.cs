@@ -53,7 +53,7 @@ namespace BugTrackingApplication.Pages
                 Project.Updated = DateTime.Now;
 
                 await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
+                return RedirectToPage("./Projects");
             }
 
             return Page();

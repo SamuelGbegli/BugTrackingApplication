@@ -19,5 +19,5 @@ namespace BugTrackingApplication.Models
         public Bug Bug { get; set; }
 
         public string User { get; set; }
-    }
+    }    
 }

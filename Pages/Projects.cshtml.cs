@@ -1,30 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BugTrackingApplication.Data;
+using BugTrackingApplication.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BugTrackingApplication.Data;
-using BugTrackingApplication.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace BugTrackingApplication.Pages
 {
-    public class IndexModel : PageModel
+    [Authorize]
+    public class ProjectsModel : PageModel
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-
-        public IndexModel(ApplicationDbContext context,
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
-        {
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
 
         [BindProperty(SupportsGet = true)]
         public string Sort { get; set; }
@@ -34,6 +22,12 @@ namespace BugTrackingApplication.Pages
 
         [BindProperty(SupportsGet = true)]
         public bool OpenBugsOnly { get; set; }
+
+        public ProjectsModel (ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
 
         public IList<Project> Projects { get; set; }
 
